@@ -1,10 +1,12 @@
 from tkinter import *
 import tkinter.messagebox
 from PIL import Image, ImageTk
-import time
 import socket, threading, sys, traceback, os
 
 from RtpPacket import RtpPacket
+
+# Extension
+import time
 
 CACHE_FILE_NAME = "cache-"
 CACHE_FILE_EXT = ".jpg"
@@ -40,7 +42,7 @@ class Client:
 		self.requestSent = -1										# Code Request
 		self.teardownAcked = 0										# Flag Teardown
 		self.connectToServer()										# Connect to server
-		self.frameNbr = 0											# Number of loss packets
+		self.frameNbr = 0											# Number of packets
 
 
 
@@ -182,11 +184,11 @@ class Client:
 		"""Write the received frame to a temp image file. Return the image file."""
 		#TODO
 		#------------
+		# Create and open cache
 		cache = CACHE_FILE_NAME + str(self.sessionId) + CACHE_FILE_EXT
 		file = open(cache, "wb")
 		file.write(data)
 		file.close()
-
 		return cache
 
 
@@ -371,9 +373,11 @@ class Client:
 	def handler(self):
 		"""Handler on explicitly closing the GUI window."""
 		#TODO
+		#-------------
+		# First, pause video if video is playing
 		if (self.state == self.PLAYING):
 			self.pauseMovie()
-		# Message box
+		# Send a message box
 		if tkinter.messagebox.askokcancel("Quit", "Are you sure?"):
 			# Exit client and socket
 			if self.state != self.INIT:
