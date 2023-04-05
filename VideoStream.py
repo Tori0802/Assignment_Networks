@@ -12,7 +12,25 @@ class VideoStream:
 
 		print('frame = 0')
 
+	def nextFrame(self):
+		"""Get next frame."""
+		data = self.file.read(5)  # Get the framelength from the first 5 bits
+		if data:
+			framelength = int(data)
+
+			# Read the current frame
+			data = self.file.read(framelength)
+			self.frameNum += 1
+		return data
+
+	def frameNbr(self):
+		"""Get frame number."""
+		return self.frameNum
+
+	# Extend functions in EXTEND part
+
 	def get_total_time_video(self):
+		"""Get total time (idle)"""
 		self.totalFrame = 0
 		# Get total of frames
 		while True:
@@ -27,57 +45,46 @@ class VideoStream:
 				break
 		return self.totalFrame * 0.05	 # 50 miliseconds
 
-	def setIsNext(self):
-		self.isNext = 1
 
-	def nextFrame(self):
-		"""Get next frame."""
-		# Handle forward signal
-		if self.isNext == 1:
-			# Forward 0.05% total video
-			forwardFrames = int(self.totalFrame * 0.05)
-			remainFrames = int(self.totalFrame - self.frameNum)
-			# If video has only remainFrames, forwardFrames = remainFrames
-			if forwardFrames > remainFrames:
-				forwardFrames = remainFrames
-			self.isNext = 0
-		# If not, only forward 1 frames normally
-		else:
-			forwardFrames = 1
+	def forwardFrame(self):
+		"""Handle Forward frames"""
+		# Idle - Forward 0.05% total video
+		forwardFrames = int(self.totalFrame * 0.05)
+		remainFrames = int(self.totalFrame - self.frameNum)
 
+		# If video has only remainFrames, forwardFrames = remainFrames
+		if forwardFrames >= remainFrames:
+			forwardFrames = remainFrames
+
+		# Implement forward frames (same as the implementation of nextFrame function)
 		if forwardFrames:
-			for i in range(forwardFrames):
-				# Get the framelength from the first 5 bits
-				data = self.file.read(5)
-				if data:
-					framelength = int(data)
-
-					# Read the current frame
-					data = self.file.read(framelength)
-					self.frameNum += 1
+			for i in range(forwardFrames + 1):
+				# Get next forwardFrames
+				data = self.nextFrame()
 			return data
 
 
-	def prevFrame(self):
-		"""Get next frame."""
-		prevFrames = int(self.totalFrame * 0.05)
+	def backwardFrame(self):
+		"""Handle Backward frames"""
+		# Idle - Backward 0.05% total video
+		backwardFrames = int(self.totalFrame * 0.05)
+
+		# Reset read data to first position
 		data = self.file.seek(0)
-		if self.frameNum <= prevFrames:
+
+		# If video has only transmitted frameNum frames (< backwardFrames), start read Frame No.1
+		if self.frameNum <= backwardFrames:
 			self.frameNum = 0
-			if data:
-				framelength = int(data)
-				# Read the current frame
-				data = self.file.read(framelength)
-				self.frameNum += 1
+			data = self.nextFrame()
+
+		# Else, start read Frame number tempFrame (= frameNum - backwardFrames)
 		else:
-			fFrames = self.frameNum - prevFrames
+			tempFrame = self.frameNum - backwardFrames
 			self.frameNum = 0
-			for i in range(fFrames):
+			for i in range(tempFrame):
 				data = self.nextFrame()
 		return data
 
-	def frameNbr(self):
-		"""Get frame number."""
-		return self.frameNum
+
 	
 	
