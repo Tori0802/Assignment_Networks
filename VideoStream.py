@@ -6,9 +6,8 @@ class VideoStream:
 		except:
 			raise IOError
 
-		self.frameNum = 0
-		self.isNext = 0
-		self.totalFrame = 0
+		self.frameNum = 0			# Total sent frames
+		self.totalFrame = 0			# Total frames in video
 
 		print('frame = 0')
 
