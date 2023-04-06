@@ -285,10 +285,11 @@ class Client2:
         # Send a BACKWARD request to server
         self.sendRtspRequest(self.BACKWARD)
         # Update frameNbr
-        if self.frameNbr <= 25:
+        numberFrames = int(self.totalTime / 0.05 * 0.05) # Divide 50 miliseconds * 5%
+        if self.frameNbr <= numberFrames:
             self.frameNbr = 0
         else:
-            self.frameNbr -= 25
+            self.frameNbr -= numberFrames
         # Set flag backward
         self.isBackward = 1
 
@@ -406,6 +407,7 @@ class Client2:
         """Send RTSP request to the server."""
         #TODO
         # -------------
+
         # TO COMPLETE
         # -------------
         # SETUP request
@@ -684,7 +686,7 @@ class Client2:
         Lb2 = Listbox(top, width=50, height=30)
 
         # Insert the first two lines: "Describe:" and the name of the video file
-        Lb2.insert(1, "Describe: ")
+        Lb2.insert(1, "Describe")
         Lb2.insert(2, "Name video: " + str(self.fileName))
 
         # Loop over the remaining lines of the description and insert them into the listbox

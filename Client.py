@@ -153,7 +153,7 @@ class Client:
 		while True:
 			try:
 				# Create "data" to read and decode received packet
-				data = self.rtpSocket.recv(20480)  							# Maximum buffer 20480 bits -> 20 bytes
+				data = self.rtpSocket.recv(20480)  							# Maximum buffer 20480 bytes
 				if data:
 					rtpPacket = RtpPacket()
 					rtpPacket.decode(data)  								# Decode data

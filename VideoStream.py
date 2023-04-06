@@ -47,7 +47,7 @@ class VideoStream:
 
 	def forwardFrame(self):
 		"""Handle Forward frames"""
-		# Idle - Forward 0.05% total video
+		# Idle - Forward 5% total video
 		forwardFrames = int(self.totalFrame * 0.05)
 		remainFrames = int(self.totalFrame - self.frameNum)
 
@@ -65,7 +65,7 @@ class VideoStream:
 
 	def backwardFrame(self):
 		"""Handle Backward frames"""
-		# Idle - Backward 0.05% total video
+		# Idle - Backward 5% total video
 		backwardFrames = int(self.totalFrame * 0.05)
 
 		# Reset read data to first position
